@@ -1,0 +1,91 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
+    "eqeqeq": [
+      2,
+      "allow-null"
+    ], // 必须使用全等
+    "no-constant-condition": 2, // 禁止在条件中使用常量表达式 if( true ) if( 1 )
+    "no-dupe-keys": 2, // 在创建对象字面量时不允许键重复 { a:1, a:1 }
+    "no-else-return": 2, // 如果if语句里面有 return , 后面不能跟 else 语句
+    "no-empty": 2, // 块语句中的内容不能为空
+    "no-fallthrough": 1, // 禁止switch穿透
+    "no-implicit-coercion": 1, // 禁止隐式转换
+    "no-nested-ternary": 0, // 禁止使用嵌套的三目运算
+    "no-param-reassign": 2, // 禁止给参数重新赋值
+    "no-script-url": 2, // 禁止使用 javascript:void(0)
+    "no-sparse-arrays": 2, // 禁止稀疏数组， [1,,2]
+    "no-undef-init": 2, // 变量初始化时不能直接给它赋值为 undefined
+    "no-underscore-dangle": 1, // 标识符不能以 _ 开头或结尾
+    "no-unneeded-ternary": 2, // 禁止不必要的嵌套 var isYes = answer === 1 ? true : false;
+    "no-unreachable": 2, // 不能有无法执行的代码
+    "no-var": 2, // 禁用var，用 let 和 const 代替
+    "default-case": 2, // switch 语句最后必须有 default
+    "max-params": [
+      2,
+      3
+    ], // 函数最多只能有3个参数
+    "new-cap": 2, // 函数名首行大写必须使用 new 方式调用，首行小写必须用不带 new 方式调用
+    "quotes": [
+      1,
+      "single"
+    ], // 使用单引号
+    "jsx-quotes": [
+      "error",
+      "prefer-single"
+    ],
+    "use-isnan": 2, // 禁止比较时使用 NaN，只能用 isNaN()
+    "valid-typeof": 2, // 必须使用合法的typeof的值
+    "no-empty-function": "error", // 禁止出现空函数
+    "no-redeclare": "error", // 禁止重新声明变量
+    "react/react-in-jsx-scope": "off", // tsx局部react未引入
+    "guard-for-in": 0, // for in循环要用if语句过滤
+    "wrap-iife": [
+      2,
+      "inside"
+    ], //立即执行函数表达式的小括号风格
+    "react/jsx-no-undef": "off",
+    "@typescript-eslint/no-this-alias": [
+      "off"
+    ],
+    "curly": [
+      2,
+      "all"
+    ],
+    "no-irregular-whitespace": 2,
+    "no-multi-spaces": 1,
+    "no-multiple-empty-lines": [
+      1,
+      {
+        "max": 2
+      }
+    ],
+    "object-shorthand": 1
+  }
+}

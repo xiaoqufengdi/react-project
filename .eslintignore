@@ -1,0 +1,7 @@
+scripts/
+dist/
+electron/
+src/container/app/page/file
+src/components/tiny-icons
+src/services
+src/data-service/data-driven
