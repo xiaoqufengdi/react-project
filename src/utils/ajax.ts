@@ -73,8 +73,9 @@ export const ajaxUpload = <T>(params: { url: string; data?: unknown; headers?: R
     .then((res) => res.data);
 };
 
-export const ajaxDelete = (params: { url: string; data?: Record<string, string> }): Promise<Record<string, unknown>> => {
-  const { url, data } = params;
+// Record<string, string>
+export const ajaxDelete = <T>(params: { url: string; data?: unknown }): Promise<T> => {
+  const { url, data = {} } = params;
   let URL = url;
   if (data) {
     const key = Object.keys(data)[0];
