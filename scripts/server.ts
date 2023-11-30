@@ -21,12 +21,22 @@ app.use(express.static('public')); // static
 
 // 接口代理
 app.use(
-  createProxyMiddleware('/proxyApi/', {
-    target: 'http://192.168.0.2:9090/',
+  createProxyMiddleware('/newProxyApi/', {
+    target: 'http://39.98.41.186:6050/',
     pathRewrite: {
-      '^/proxyApi/': '/', // rewrite path
+      '^/newProxyApi/': '/', // rewrite path
     },
     changeOrigin: true,
+  })
+);
+// icons
+app.use(
+  createProxyMiddleware('/fileServer', {
+    target: 'http://39.98.41.186:6050/',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/fileServer': '/ingress/fileservice/file/platform', // rewrite path
+    },
   })
 );
 

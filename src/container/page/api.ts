@@ -13,7 +13,7 @@ interface IApiUrl {
  */
 function getUrl(url: string): string{
     const _proxyUrl = '/newProxyApi/';
-    return `${_proxyUrl}url`;
+    return `${_proxyUrl}${url}`;
 }
 
 
@@ -35,7 +35,7 @@ export const apiUrl: IApiUrl = {
 //   return await ajax.ajaxPost({ url: '/proxyApi/get', data });
 // };
 
-type FunctionType = (data: Record<string, unknown>) => Promise<{ errcode: number; msg: string; data: unknown }>;
+type FunctionType = <T>(data: Record<string, unknown>) => Promise<T>;
 
 interface IRequest{
     projectInfo: Record<string, FunctionType>

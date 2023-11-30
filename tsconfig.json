@@ -34,10 +34,14 @@
       "@utils": [
         "src/utils"
       ],
+      "@components/*": [
+        "src/components/*"
+      ],
     }
   },
   "files": [
     "./share/global.d.ts",
+    "./share/module.d.ts",
   ],
   "include": [
     "src/**/*"

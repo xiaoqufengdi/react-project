@@ -1,0 +1,49 @@
+.datasourcePane {
+  height: 360px;
+  border: 1px solid rgba(240, 240, 240, 1);
+  border-radius: 4px;
+
+  > .title {
+    height: 40px;
+    border-bottom: 1px solid #f6f6f6;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    background: #f6f6f6;
+    justify-content: space-between;
+
+    > h3 {
+      font-size: 12px;
+      color: rgba(38, 38, 38, 0.85);
+      font-weight: normal;
+      margin: 0;
+    }
+
+    .search {
+      position: relative;
+
+      > img {
+        position: absolute;
+        left: 9px;
+        top: 5px;
+      }
+
+      > input {
+        border: 1px solid rgba(217, 217, 217, 1);
+        border-radius: 4px;
+        width: 200px;
+        height: 28px;
+        outline: none;
+        padding-left: 28px;
+        color: rgba(38, 38, 38, 0.85);
+        font-size: 12px;
+
+        &::-webkit-input-placeholder {
+          color: #bfbfbf;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  
+}

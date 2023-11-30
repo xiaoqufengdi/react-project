@@ -1,0 +1,145 @@
+
+.dataSourceListContent {
+  display: flex;
+  height: calc(100% - 40px);
+  font-size: 12px;
+  color: #8c8c8c;
+  .content-title {
+    line-height: 24px;
+  }
+
+  .menus {
+    width: 50%;
+    overflow: auto;
+    border-right: 1px solid #f0f0f0;
+    padding-top: 8px;
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 10px;
+      background-color: #fff;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  
+    &::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+    .content-title {
+      margin-left: 10px;
+    }
+    li {
+      line-height: 32px;
+      cursor: pointer;
+      padding-left: 15px;
+      position: relative;
+      color: #8c8c8c;
+      &.active {
+        color: #262626;
+      }
+
+      &.hasChildren {
+        > span {
+          padding-left: 15px;
+        }
+        &::before {
+          content: '';
+          left: 10px;
+          top: 13px;
+          position: absolute;
+          width: 0px;
+          height: 0px;
+          border-top: 5px solid #8c8c8c;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+        }
+      }
+
+      > span {
+        display: block;
+      }
+      > i {
+        height: 30px;
+        width: 30px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        cursor: pointer;
+      }
+
+      &.close {
+        &::before {
+          transform: rotate(-90deg);
+          left: 13px;
+        }
+        > ul {
+          overflow: hidden;
+          height: 0;
+        }
+      }
+    }
+
+    > ul {
+      ul {
+        border-left: 1px solid #e0e0e0;
+      }
+    }
+  }
+
+  .moduleList {
+    width: 50%;
+    overflow: auto;
+    padding-left: 17px;
+    padding-top: 8px;
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 10px;
+      background-color: #fff;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  
+    &::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+    li {
+      line-height: 32px;
+      position: relative;
+      cursor: pointer;
+      padding-left: 20px;
+
+      > .anticon {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.5;
+      }
+
+      > svg {
+        position: absolute;
+        right: 20px;
+        top: 8px;
+        display: none;
+        font-size: 16px;
+      }
+
+      &.active {
+        color: #262626;
+        > svg {
+          display: block;
+        }
+        > .anticon {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}

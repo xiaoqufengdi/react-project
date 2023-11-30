@@ -73,7 +73,8 @@ const ProjectInfo: React.FC= ()=>{
     // 获取左侧树数据
     const fetchTreeData = useCallback(async(params:{app_id: string })=>{
         try{
-            const { data } : IResult = await request.projectInfo.queryTypeAll(params);
+            const result = await request.projectInfo.queryTypeAll(params);
+            console.log('result', result);
             // 给节点数据加上key属性
             const fun = function (arr: Array<INode>){
                 return arr.map((obj: INode)=>{
@@ -81,13 +82,13 @@ const ProjectInfo: React.FC= ()=>{
                         ...obj,
                         key: (obj.type === NODE_TYPE.CLASS ? obj.class_id : obj.index_id) || ''
                     };
-                    if (_obj.children?.length) {
-                       return fun(_obj.children)
+                    if (obj.children?.length) {
+                       _obj.children = fun(obj.children);
                     }
                     return _obj
                 })
             }
-            const _data: Array<INode> = fun(data as INode[]);
+            const _data: Array<INode> = fun(result as INode[]);
             setDataSource(_data);
         } catch(e) {
             console.log(e);
@@ -131,7 +132,7 @@ const ProjectInfo: React.FC= ()=>{
                         overlay={menu}
                         placement='bottomRight'
                     >
-                        <span><IconFont style={{ fontSize: '12px', paddingRight: '10px' }} type="icon-more" /></span>
+                        <span><IconFont style={{ fontSize: '12px', paddingRight: '10px' }} type='icon-more' /></span>
                     </Dropdown>) : null
                 }
             </div>
@@ -256,7 +257,7 @@ const ProjectInfo: React.FC= ()=>{
     return (
         <Row className='project-info'>
             <Col sm={8} md={6} lg={6} className='project-info-left' >
-                <div className='title'><span>全部项目</span></div>
+                <div className='project-info-title'><span>全部项目</span></div>
                 <Tree
                     ref={treeRef }
                     // // checkable

@@ -13,6 +13,7 @@ export default {
     alias: {
       '@src': resolve('./src'),
       '@utils': resolve('./src/utils'),
+      '@components': resolve('./src/components'),
     },
   },
   plugins: [
