@@ -12,19 +12,22 @@ interface IApiUrl {
  * @author lujianmin  2023-11-30
  */
 function getUrl(url: string): string{
-    const _proxyUrl = '/newProxyApi/';
+    console.log('getUrl', url);
+    const _proxyUrl = '/newProxyApi';
     return `${_proxyUrl}${url}`;
 }
 
 
 export const apiUrl: IApiUrl = {
     projectInfo: { // 项目相关的接口地址
-        creatType: getUrl('ingress/searchengine/api/config/class/create'), // 创建分类
-        queryTypeAll: getUrl('ingress/searchengine/api/config/class/listAll'), // 所有分类、项目查询
-        changeType: getUrl('ingress/searchengine/api/config/class/change'), // 改变分类
-        createIndex: getUrl('ingress/searchengine/api/config/index/create'), // 创建索引集合
-        deleteIndex: getUrl('ingress/searchengine/api/config/index/delete '), // 删除
-        detailIndex: getUrl('/ingress/searchengine/api/config/index/detail '),  // 索引集合详情
+        createType: getUrl('/ingress/searchengine/api/config/class/create'), // 创建分类
+        queryTypeAll: getUrl('/ingress/searchengine/api/config/class/listAll'), // 所有分类、项目查询
+        updateType: getUrl('/ingress/searchengine/api/config/class/update'),  // 分类更新
+        deleteType: getUrl('/ingress/searchengine/api/config/class/delete'), // 删除分类
+        changeIndexType: getUrl('/ingress/searchengine/api/config/class/change'), // 改变分类
+        createIndex: getUrl('/ingress/searchengine/api/config/index/create'), // 创建索引集合
+        deleteIndex: getUrl('/ingress/searchengine/api/config/index/delete'), // 删除索引集合
+        detailIndex: getUrl('/ingress/searchengine/api/config/index/detail'),  // 索引集合详情
     }
 
     // 其他模块...
@@ -44,9 +47,11 @@ interface IRequest{
 // 统一的请求封装
 const request: IRequest = {
     projectInfo: { // 项目相关接口
-        creatType: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.createType, data}),
+        createType: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.createType, data}),
         queryTypeAll: (data: Record<string, unknown>)=> ajax.ajaxGet({url: apiUrl.projectInfo.queryTypeAll, queryParams: data }),
-        changeType: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.changeType, data}),
+        updateType: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.updateType, data}),
+        deleteType: (data: Record<string, unknown>)=> ajax.ajaxDelete({url: apiUrl.projectInfo.deleteType, data }),
+        changeIndexType: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.changeIndexType, data}),
         createIndex: (data: Record<string,unknown>) => ajax.ajaxPost({url: apiUrl.projectInfo.createIndex, data}),
         deleteIndex: (data: Record<string,unknown>) => ajax.ajaxDelete({url: apiUrl.projectInfo.deleteIndex, data}),
         detailIndex: (data: Record<string,unknown>) => ajax.ajaxGet({url: apiUrl.projectInfo.detailIndex, queryParams: data}),

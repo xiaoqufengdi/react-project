@@ -54,13 +54,17 @@ export const ajaxGet = <T>(params: { url: string; queryParams?: unknown }): Prom
 };
 
 export const ajaxPost = <T>(params: { url: string; data?: unknown }): Promise<T> => {
+    console.log('ajaxPost', params);
   const { url, data = {} } = params;
   return instance
     .post(url, data, {
       ...config,
       headers: { 'VERSION': '3.0', 'Content-Type': 'application/json' },
     })
-    .then((res) => res.data);
+    .then((res) => {
+        console.log('ajaxPost res', res);
+        return res.data
+    });
 };
 
 export const ajaxUpload = <T>(params: { url: string; data?: unknown; headers?: Record<string, unknown> }): Promise<T> => {
@@ -75,11 +79,23 @@ export const ajaxUpload = <T>(params: { url: string; data?: unknown; headers?: R
 
 // Record<string, string>
 export const ajaxDelete = <T>(params: { url: string; data?: unknown }): Promise<T> => {
-  const { url, data = {} } = params;
+    console.log('ajaxDelete');
+    const { url, data = {} } = params;
   let URL = url;
   if (data) {
-    const key = Object.keys(data)[0];
-    URL = URL + `?${key}=${data[key]}`;
+    // const key = Object.keys(data)[0];
+      // URL = URL + `?${key}=${_data[key]}`;
+
+    let _dataStr = '';
+    const _data = data as { [key: string]: any };
+    for(const key in _data) {
+        if (_dataStr) {
+            _dataStr += `&${key}=${_data[key]}`
+        } else {
+            _dataStr = `${key}=${_data[key]}`
+        }
+    }
+    URL = `${URL}?${_dataStr}`;
   }
   return instance
     .delete(URL, {
