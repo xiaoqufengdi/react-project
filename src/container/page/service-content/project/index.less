@@ -23,6 +23,9 @@
         .ant-tree-switcher{
           line-height: unset !important;
         }
+        .ant-tree-switcher-noop {
+          width: 5px !important;
+        }
         .ant-tree-node-content-wrapper{
           height: 32px;
           line-height: 32px;
@@ -34,8 +37,17 @@
 
   .project-info-right{
     background: white !important;
+    padding: 20px;
+    .project-info-right-title{
+        height: 40px;
+        line-height: 40px;
+        background-color: rgb(247, 247, 247);
+        border-radius: 4px;
 
+    }
+    .project-info-right-content {
+      height: calc(100% - 40px);
+      padding: 10px;
+    }
   }
-
-
 }

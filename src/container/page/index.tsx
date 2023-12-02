@@ -1,5 +1,6 @@
-import ProjectInfo from '@src/container/page/project';
+import ServiceContent from '@src/container/page/service-content';
+
 const PageIndex: React.FC = (): JSX.Element => {
-  return (<ProjectInfo/>);
+  return (<ServiceContent/>);
 };
 export default PageIndex;

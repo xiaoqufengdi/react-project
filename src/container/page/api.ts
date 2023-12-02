@@ -28,6 +28,12 @@ export const apiUrl: IApiUrl = {
         createIndex: getUrl('/ingress/searchengine/api/config/index/create'), // 创建索引集合
         deleteIndex: getUrl('/ingress/searchengine/api/config/index/delete'), // 删除索引集合
         detailIndex: getUrl('/ingress/searchengine/api/config/index/detail'),  // 索引集合详情
+        bindDataSource: getUrl('/ingress/searchengine/api/config/index/bind'), // 绑定数据源
+        queryModelList: getUrl('/ideserver/api/v1/data/modelList'),  // 数据源接口-查询已经创建的模型实例
+        collectionDetail: getUrl('/ingress/dataservice/api/model/collection/detail'),  // 数据源接口-查询表的字段详情
+
+        search:getUrl('/ingress/searchengine/api/search'), // 搜索接口
+
     }
 
     // 其他模块...
@@ -55,6 +61,10 @@ const request: IRequest = {
         createIndex: (data: Record<string,unknown>) => ajax.ajaxPost({url: apiUrl.projectInfo.createIndex, data}),
         deleteIndex: (data: Record<string,unknown>) => ajax.ajaxDelete({url: apiUrl.projectInfo.deleteIndex, data}),
         detailIndex: (data: Record<string,unknown>) => ajax.ajaxGet({url: apiUrl.projectInfo.detailIndex, queryParams: data}),
+        bindDataSource: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.bindDataSource, data}),
+        queryModelList: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.queryModelList, data}),
+        collectionDetail: (data: Record<string, unknown>)=> ajax.ajaxGet({url: apiUrl.projectInfo.collectionDetail, queryParams: data}),
+
 
     }
 

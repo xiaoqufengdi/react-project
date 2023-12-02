@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import {Button, Row, Col, Form, Input, Layout, message, Modal,  Space, Table, Tree, Select, Dropdown, Menu} from 'antd';
+import {Button, Row, Col, Form, Input, Layout, message, Modal,  Space, Table, Tree, Select, Tabs, Dropdown, Menu} from 'antd';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -7,20 +7,17 @@ import {
     MoreOutlined,
     CloseOutlined
 } from '@ant-design/icons';
-import IconFont from '@src/container/page/components/iconFont';
 import type { DataNode, TreeProps } from 'antd/es/tree';
 import { TreeNodeNormal } from 'antd/lib/tree/Tree';
 import request from '@src/container/page/api';
+import Config from './config';
+import Dictionary from './dictionary';
+import Log from './log';
+import Search from './search';
 import './index.less';
 
 const { TreeNode } = Tree;
 const { Header, Sider, Content } = Layout;
-const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 18 }
-};
-
-// const deleteIcon: string = '/img/icons/icon-close.jpg';
 
 // 分类下拉菜单
 enum OPERATOR_TYPE {
@@ -46,12 +43,12 @@ export interface IResult{
 }
 
 // 节点类型-分类|项目节点
-enum NODE_TYPE {
+export enum NODE_TYPE {
     CLASS = 'class',
     ITEM = 'item'
 }
 // 树节点的数据结构
-interface INode extends DataNode {
+export interface INode extends DataNode {
     // key?: string | number,
     // title: string,
     app_id: string;
@@ -64,7 +61,6 @@ interface INode extends DataNode {
 
 const ProjectInfo: React.FC= ()=>{
     const [dataSource, setDataSource] = useState<INode[]>([]);
-    const [selectedKeys = [], setSelectedKeys] = useState<string[]>([]);
     // const treeRef = useRef<HTMLDivElement|null>(null);
     // const treeRef = useRef<typeof Tree>(null);
     const treeRef = useRef<any>(null);
@@ -82,6 +78,8 @@ const ProjectInfo: React.FC= ()=>{
     }, []);
 
     const [editingKey, setEditingKey] = useState<string | null>(null); // 编辑节点
+    const [selectedNode, setSelectedNode] = useState< INode|null>(null); // 记录选中的节点数据
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([]); // 记录选中的节点key
 
 
     // 初始化取左侧树的数据
@@ -255,22 +253,19 @@ const ProjectInfo: React.FC= ()=>{
         );
 
         const renderTitle = (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 5px' }}>
                 <span>{treeNode.title}</span>
                 {
                     treeNode.data.type === NODE_TYPE.CLASS ? (<div>
-                        {/* <PlusOutlined style={{marginRight: '10px'}} /> */}
                         <Dropdown
                             trigger={["hover"]}
                             menu={menu}
                             placement='bottomRight'
                         >
                             <span><MoreOutlined rotate={90} /></span>
-                                {/*<IconFont style={{ fontSize: '12px', paddingRight: '10px' }} type='icon-more' />*/}
 
                         </Dropdown>
                     </div> ) : <CloseOutlined onClick={()=>handleDeleteIndex(treeNode.data)} />
-                        // <img src={deleteIcon} alt="pic"/>
                 }
             </div>
         );
@@ -370,6 +365,19 @@ const ProjectInfo: React.FC= ()=>{
             }
         }
     };
+
+    // 选中节点响应函数
+    const handleOnSelect = (selectedKeys: any[], event: any)=>{
+        console.log('handleOnSelect', selectedKeys, event);
+        if(event.selected){
+            setSelectedNode(event.node.data);
+            setSelectedKeys([event.node.key]);
+        }
+        else{
+            setSelectedNode(null);
+            setSelectedKeys([]);
+        }
+    }
 
     // 获取分类下拉菜单弹窗里面的内容
     const getModalContent = (modalType: OPERATOR_TYPE):JSX.Element|null=>{
@@ -511,7 +519,7 @@ const ProjectInfo: React.FC= ()=>{
                    onDrop={onDrop}
                    titleRender={renderTreeNode}
                    autoExpandParent={true}
-                   // onSelect={(selectedKeys: any[], event: any)=>{ handleOnSelect(selectedKeys, event) }}
+                   onSelect={(selectedKeys: any[], event: any)=>{ handleOnSelect(selectedKeys, event) }}
                    selectedKeys={ selectedKeys }
                    defaultExpandAll={true}
                >
@@ -523,15 +531,28 @@ const ProjectInfo: React.FC= ()=>{
            </Sider>
            <Layout>
                <Content className='project-info-right'>
-                   <Row><Col span={2}>
+                   <Row className='project-info-right-title'><Col span={1}>
                        {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                            className: 'trigger',
                            onClick: () => setCollapsed(!collapsed),
                        })}
-                   </Col><Col span={22}>选中的项目 </Col> </Row>
-                   <Row>
+                   </Col><Col span={23} className='project-info-right-name' >选中的项目 </Col> </Row>
+                   <Row className='project-info-right-content'>
                        <Col span={24}>
-                           展示区域
+                           <Tabs  defaultActiveKey='config' tabBarGutter={50}   >
+                               <Tabs.TabPane tab='配置' key='config' >
+                                   <Config selectedNode ={selectedNode}/>
+                               </Tabs.TabPane>
+                               <Tabs.TabPane tab='搜索' key='search' >
+                                   {/*<Search selectedNode ={selectedNode}/>*/}
+                               </Tabs.TabPane>
+                               <Tabs.TabPane tab='字典' key='dictionary' >
+                                   {/*<Dictionary selectedNode ={selectedNode}/>*/}
+                               </Tabs.TabPane>
+                               <Tabs.TabPane tab='日志' key='log' >
+                                   {/*<Log selectedNode ={selectedNode}/>*/}
+                               </Tabs.TabPane>
+                           </Tabs>;
                        </Col>
                    </Row>
                    {
