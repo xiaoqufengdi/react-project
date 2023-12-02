@@ -538,7 +538,7 @@ const ProjectInfo: React.FC= ()=>{
                                    <SearchInfo selectedNode ={selectedNode} app_id={app_id}/>
                                </Tabs.TabPane>
                                <Tabs.TabPane tab='字典' key='dictionary' >
-                                   {/*<Dictionary selectedNode ={selectedNode}/>*/}
+                                   <Dictionary selectedNode ={selectedNode} app_id={app_id}/>
                                </Tabs.TabPane>
                                <Tabs.TabPane tab='日志' key='log' >
                                    {/*<Log selectedNode ={selectedNode}/>*/}
@@ -553,7 +553,7 @@ const ProjectInfo: React.FC= ()=>{
                            okText='确定'
                            onOk={() => handleOk()}
                            onCancel={() => handleCancel()}
-                           className='modal-basic-style modal-materiel'
+                           className='modal-basic-style'
                        >
                            { getModalContent(modalType)}
                        </Modal> : null

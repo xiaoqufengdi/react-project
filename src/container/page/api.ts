@@ -12,7 +12,6 @@ interface IApiUrl {
  * @author lujianmin  2023-11-30
  */
 function getUrl(url: string): string{
-    console.log('getUrl', url);
     const _proxyUrl = '/newProxyApi';
     return `${_proxyUrl}${url}`;
 }
