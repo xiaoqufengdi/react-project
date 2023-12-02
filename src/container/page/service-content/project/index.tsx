@@ -3,7 +3,6 @@ import {Button, Row, Col, Form, Input, Layout, message, Modal,  Space, Table, Tr
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    PlusOutlined,
     MoreOutlined,
     CloseOutlined
 } from '@ant-design/icons';
@@ -11,9 +10,10 @@ import type { DataNode, TreeProps } from 'antd/es/tree';
 import { TreeNodeNormal } from 'antd/lib/tree/Tree';
 import request from '@src/container/page/api';
 import Config from './config';
+import { IResult, NODE_TYPE } from './interface';
 import Dictionary from './dictionary';
 import Log from './log';
-import Search from './search';
+import SearchInfo from './search';
 import './index.less';
 
 const { TreeNode } = Tree;
@@ -36,17 +36,7 @@ const ACTION_DROP_LIST: Action[] = [
 ];
 
 // 接口返回结果
-export interface IResult{
-    errcode: number;
-    msg: string;
-    data: unknown
-}
 
-// 节点类型-分类|项目节点
-export enum NODE_TYPE {
-    CLASS = 'class',
-    ITEM = 'item'
-}
 // 树节点的数据结构
 export interface INode extends DataNode {
     // key?: string | number,
@@ -58,6 +48,7 @@ export interface INode extends DataNode {
     type: NODE_TYPE,
     children?: Array<INode>
 }
+// 传给各个子组件的属性
 
 const ProjectInfo: React.FC= ()=>{
     const [dataSource, setDataSource] = useState<INode[]>([]);
@@ -536,15 +527,15 @@ const ProjectInfo: React.FC= ()=>{
                            className: 'trigger',
                            onClick: () => setCollapsed(!collapsed),
                        })}
-                   </Col><Col span={23} className='project-info-right-name' >选中的项目 </Col> </Row>
+                   </Col><Col span={23} className='project-info-right-name' >{ selectedNode ? selectedNode.title : '未选中项目' } </Col> </Row>
                    <Row className='project-info-right-content'>
                        <Col span={24}>
                            <Tabs  defaultActiveKey='config' tabBarGutter={50}   >
                                <Tabs.TabPane tab='配置' key='config' >
-                                   <Config selectedNode ={selectedNode}/>
+                                   <Config selectedNode ={selectedNode} app_id={app_id}/>
                                </Tabs.TabPane>
                                <Tabs.TabPane tab='搜索' key='search' >
-                                   {/*<Search selectedNode ={selectedNode}/>*/}
+                                   <SearchInfo selectedNode ={selectedNode} app_id={app_id}/>
                                </Tabs.TabPane>
                                <Tabs.TabPane tab='字典' key='dictionary' >
                                    {/*<Dictionary selectedNode ={selectedNode}/>*/}
@@ -552,7 +543,7 @@ const ProjectInfo: React.FC= ()=>{
                                <Tabs.TabPane tab='日志' key='log' >
                                    {/*<Log selectedNode ={selectedNode}/>*/}
                                </Tabs.TabPane>
-                           </Tabs>;
+                           </Tabs>
                        </Col>
                    </Row>
                    {
