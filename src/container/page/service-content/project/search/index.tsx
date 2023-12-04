@@ -58,7 +58,7 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
         console.log(11);
     }, [])
 
-    const onSearch = (value: any) => {
+    const onChange = (value: any) => {
         console.log(value);
         setValue(value.trim());
     }
@@ -67,9 +67,9 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
         <div className='project-search'>
             {
                 isIndex ? (<>
-                    <Row>
+                    <Row className='project-search-title'>
                         <Col span={20}>
-                            <Input value={value} prefix={<SearchOutlined />} placeholder='请输入' onChange={onSearch} style={{ width: 200 }} />
+                            <Input value={value} prefix={<SearchOutlined />} placeholder='请输入' onChange={onChange} style={{ width: 200 }} />
                         </Col>
                         <Col span={4}>结果数量</Col>
                     </Row>

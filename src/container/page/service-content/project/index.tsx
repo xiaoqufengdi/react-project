@@ -541,7 +541,7 @@ const ProjectInfo: React.FC= ()=>{
                                    <Dictionary selectedNode ={selectedNode} app_id={app_id}/>
                                </Tabs.TabPane>
                                <Tabs.TabPane tab='日志' key='log' >
-                                   {/*<Log selectedNode ={selectedNode}/>*/}
+                                   <Log selectedNode ={selectedNode} app_id={app_id}/>
                                </Tabs.TabPane>
                            </Tabs>
                        </Col>

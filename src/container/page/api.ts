@@ -38,6 +38,7 @@ export const apiUrl: IApiUrl = {
         queryDictionaryByIndex: getUrl('/ingress/searchengine/api/config/dict/apply/update'), // 查询索引集合关联字典
         updateDictionaryByIndex: getUrl('/ingress/searchengine/api/config/dict/apply/update'), // 查询索引集合关联字典
 
+        queryLog: getUrl('/ingress/searchengine/api/task'),
 
     }
 
@@ -75,7 +76,7 @@ const request: IRequest = {
         queryDictionaryByIndex: (data: Record<string, unknown>)=> ajax.ajaxGet({url: apiUrl.projectInfo.queryDictionaryByIndex, queryParams: data}),
         updateDictionaryByIndex: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.updateDictionaryByIndex, data}),
 
-
+        queryLog: (data: Record<string, unknown>) => ajax.ajaxPost({url: apiUrl.projectInfo.queryLog, data}),
     }
 
     // 其他模块...
