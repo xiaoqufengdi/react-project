@@ -1,14 +1,26 @@
-.project-log {
-  .project-log-title{
+.search-engine-log {
+  height: 100%;
+  overflow: auto;
+
+  .search-engine-log-title{
     line-height: 32px;
     margin-bottom: 15px;
-  }
-
-  .project-log-content {
-    height: calc(100% - 47px);
-    overflow-y: auto;
     .ant-input-affix-wrapper{
       border-radius: 15px;
+    }
+  }
+
+  .search-engine-log-content {
+    height: calc(100% - 48px);
+    overflow-y: auto;
+
+    .ant-table-wrapper {
+      border: 1px solid rgba(217, 217, 217, 1);
+    }
+    .ant-table-thead{
+      .ant-table-cell{
+        background: unset !important;
+      }
     }
   }
 }

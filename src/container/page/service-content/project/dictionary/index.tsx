@@ -1,9 +1,11 @@
 import {useState, useCallback, useEffect} from 'react';
 import {Row, Col, Input, Button, Table, Modal, Checkbox, message} from 'antd';
+import moment from 'moment';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import {BarsOutlined, SearchOutlined} from '@ant-design/icons';
+import {BarsOutlined, SearchOutlined, DatabaseOutlined } from '@ant-design/icons';
 import {NODE_TYPE, ComponentProps, IResult} from '../interface';
 import request from '@src/container/page/api';
+import dictionaryIcon from '@src/assert/dictionary.svg';
 import './index.less';
 
 interface IDictionary {
@@ -34,6 +36,15 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
 
     const columns = [
         {
+            title: '',
+            dataIndex: 'order',
+            key: 'order',
+            width: 50,
+            render: (text: string, record: IConnectDictionary, index: number)=>{
+                return `${index + 1}`
+            }
+        },
+        {
             title: '字典名称',
             dataIndex: 'dict_name',
             key: 'dict_name',
@@ -42,6 +53,9 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
             title: '最近一次更新',
             dataIndex: 'update_time',
             key: 'update_time',
+            render: (text: string)=>{
+                return moment(text).format('YYYY-MM-DDTHH:mm:ss');
+            }
         },
         {
             title: '状态',
@@ -72,8 +86,10 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
         try {
             const res: IConnectDictionary[] = await request.projectInfo.queryDictionaryByIndex(params);
             console.log('fetchIndexDictionary res', res);
-            if (res) {
+            if (res && res.length) {
                 setDataSource(res);
+                const keys: string[] = res.map(obj=>obj.dict_id);
+                setCheckedList(keys);
             } else {
                 setDataSource([]);
             }
@@ -149,14 +165,14 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
     }
 
     return(
-        <div className='project-dictionary'>
+        <div className='search-engine-dictionary'>
             {
                 isIndex ? (<>
-                    <Row className='project-dictionary-title'>
+                    <Row className='search-engine-dictionary-title'>
                         <Col span={2}><BarsOutlined style={{marginRight: '10px'}} />关联字典</Col>
                         <Col span={22}><Button type='link' onClick={handleClick} >关联字典</Button></Col>
                     </Row>
-                    <Row className='project-dictionary-content'>
+                    <Row className='search-engine-dictionary-content'>
                         <Col span={24}>
                             <Table rowKey='field_name' pagination={false}  dataSource={dataSource} columns={columns} />
                         </Col>
@@ -171,9 +187,9 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
                     width={360}
                     onOk={() => handleOk()}
                     onCancel={() => setVisible(false)}
-                    className='modal-basic-style project-dictionary-modal'
+                    className='modal-basic-style search-engine-dictionary-modal'
                     footer={[
-                        <Button key='back' type='text' className='project-dictionary-selected-count'>
+                        <Button key='back' type='text' className='search-engine-dictionary-selected-count'>
                             { `已选择${checkedList.length}项` }
                         </Button>,
                         <Button
@@ -185,14 +201,16 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
                         </Button>,
                     ]}
                 >
-                    <div>
+                    <div style={{maxHeight: '300px', overflow: 'auto' }}>
                     {
                         dictionaryList.length ? (<>
                                 <div style={{height: '32px', lineHeight: '32px'}}><Button type='link' onClick={onCheckAllChange}>全选</Button> </div>
-                                <Checkbox.Group style={{ display: 'block', padding: '10px 20px' }} onChange={onChangeSelectDict}>
+                                <Checkbox.Group style={{ display: 'block', padding: '10px 20px' }} onChange={onChangeSelectDict} value={checkedList}>
                                     {dictionaryList.map((option) => (
                                         <Checkbox key={option.dict_id} value={option.dict_id}>
-                                            {option.dictionary_name}
+                                            <div style={{height: '24px', lineHeight: '24px'}}>
+                                                <img src={dictionaryIcon} width={24} height={24} style={{marginRight: '10px', position: 'relative', top: '-2px'}} /> {option.dictionary_name}
+                                            </div>
                                         </Checkbox>
                                     ))}
                                 </Checkbox.Group>

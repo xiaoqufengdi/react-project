@@ -1,17 +1,26 @@
-.project-dictionary{
+.search-engine-dictionary{
   height: 100%;
-  .project-dictionary-title{
+  .search-engine-dictionary-title{
     line-height: 32px;
     margin-bottom: 15px;
   }
 
-  .project-dictionary-content{
+  .search-engine-dictionary-content{
     height: calc(100% - 47px);
     overflow-y: auto;
+
+    .ant-table-wrapper {
+      border: 1px solid rgba(217, 217, 217, 1);
+    }
+    .ant-table-thead{
+      .ant-table-cell{
+        background: unset !important;
+      }
+    }
   }
 }
 
-.project-dictionary-modal {
+.search-engine-dictionary-modal {
   .ant-modal-body {
     height: 200px;
     max-height: 300px;

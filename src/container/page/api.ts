@@ -35,10 +35,10 @@ export const apiUrl: IApiUrl = {
 
         queryDictionary: getUrl('/ingress/searchengine/api/config/dict/list'),   // 字典查询接口
         connectDictionary: getUrl('/ingress/searchengine/api/config/dict/apply'), // 字典关联接口
-        queryDictionaryByIndex: getUrl('/ingress/searchengine/api/config/dict/apply/update'), // 查询索引集合关联字典
+        queryDictionaryByIndex: getUrl('/ingress/searchengine/api/config/dict/index/query'), // 查询索引集合关联字典
         updateDictionaryByIndex: getUrl('/ingress/searchengine/api/config/dict/apply/update'), // 查询索引集合关联字典
 
-        queryLog: getUrl('/ingress/searchengine/api/task'),
+        queryLog: getUrl('/ingress/searchengine/api/task/query'),
 
     }
 
@@ -71,6 +71,7 @@ const request: IRequest = {
         queryModelList: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.queryModelList, data}),
         collectionDetail: (data: Record<string, unknown>)=> ajax.ajaxGet({url: apiUrl.projectInfo.collectionDetail, queryParams: data}),
 
+        search: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.search,  data}),
         queryDictionary: (data: Record<string, unknown>)=> ajax.ajaxGet({url: apiUrl.projectInfo.queryDictionary, queryParams: data}),
         connectDictionary: (data: Record<string, unknown>)=> ajax.ajaxPost({url: apiUrl.projectInfo.connectDictionary, data}),
         queryDictionaryByIndex: (data: Record<string, unknown>)=> ajax.ajaxGet({url: apiUrl.projectInfo.queryDictionaryByIndex, queryParams: data}),

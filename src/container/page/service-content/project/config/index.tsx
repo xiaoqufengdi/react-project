@@ -1,16 +1,20 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { Row, Col, Button, Table, Slider } from 'antd';
-import {BarsOutlined} from '@ant-design/icons';
-import { NODE_TYPE, ComponentProps, IDetail, IData } from '../interface';
+import { useState, useCallback, useEffect } from 'react';
+import { Row, Col, Button, Table, Slider, message } from 'antd';
+import {BarsOutlined, ConsoleSqlOutlined } from '@ant-design/icons';
+import { NODE_TYPE, ComponentProps, IDetail, IData, IResult } from '../interface';
 import request from '@src/container/page/api';
 import DataSourceModal, { ifsModelCollection } from '@components/data-source-pane/data-source-modal';
 import './index.less';
 import {ifsModelCollectionField} from 'ancillarySystem/interface';
 
-const NO_DATA_SOURCE = 'nodatasource'; // 没有绑定数据
+// 使用接口描述函数类型
+interface Fun {
+    (): void
+}
 
+const NO_DATA_SOURCE = 'nodatasource'; // 没有绑定数据
 const Config = (props: ComponentProps): JSX.Element=>{
-    // console.log('Config', props);
+    console.log('Config', props);
     const [isIndex, setIsIndex] = useState<boolean>(false); // 左侧是否选中了项目节点
     const [detail, setDetail] = useState<IDetail|null>(null); // 索引集合（项目）详情数据
     const [showModal, setShowModal] = useState(false);
@@ -24,6 +28,12 @@ const Config = (props: ComponentProps): JSX.Element=>{
             title: '字段',
             dataIndex: 'field_name',
             key: 'field_name',
+            render: (text: string)=>{
+                return (<div style={{display: 'flex', alignItems: 'center'}}>
+                    <ConsoleSqlOutlined style={{ marginRight: '10px' }} />
+                    <div style={{height: '32px', lineHeight: '32px'}}> {text} </div>
+                </div>)
+            }
         },
         {
             title: '检索优先级',
@@ -31,7 +41,10 @@ const Config = (props: ComponentProps): JSX.Element=>{
             key: 'relevancy',
             render: (num: number, record: IData)=>{
                 if (record.field_name !== '_id' && selectedRowKeys.includes(record.field_name)) {
-                    return (<Slider min={1} max={100} value={num}  onChange={ (value)=>onChange(value, record)}/>)
+                    return (<div style={{display: 'flex', alignItems: 'center'}}>
+                        <Slider min={1} max={100} value={num}  onChange={ (value)=>onChange(value, record)}/>
+                        <div style={{height: '32px', lineHeight: '32px'}}> {num} </div>
+                    </div>)
                 }
                 return '';
             }
@@ -103,16 +116,8 @@ const Config = (props: ComponentProps): JSX.Element=>{
         setShowModal(true);
     }
 
-    useEffect(()=>{
-        if (dataSource.length) {
-            // 绑定数据源更新
-            const fieldRelevancy : IData[] = dataSource.filter(obj=>selectedRowKeys.includes(obj.field_name));
-            bindDataSource(modelInfo, fieldRelevancy)
-        }
-    }, [modelInfo, selectedRowKeys, dataSource])
-
     // 绑定数据源
-    const bindDataSource = useCallback(async(modelInfo, field_relevancy?: IData[])=>{
+    const bindDataSource = useCallback(async(modelInfo, field_relevancy?: IData[], callback?: Fun)=>{
         try{
             const params = {
                 app_id: props.app_id,
@@ -124,15 +129,26 @@ const Config = (props: ComponentProps): JSX.Element=>{
                 field_relevancy
             };
 
-            const res = await request.projectInfo.bindDataSource(params);
+            const res: IResult = await request.projectInfo.bindDataSource(params);
             console.log('bindDataSource res', res);
+            if (!field_relevancy) {
+
+                if (res.errcode === 0) {
+                    message.info('绑定成功');
+                } else {
+                    message.error('绑定失败');
+                }
+            }
+            if (callback) {
+                callback();
+            }
         } catch (e) {
             console.log(e);
         }
     }, [props, detail]);
 
     // 获取索引状态的显示文本
-    const getStatusText =(status: string): string=>{
+    const getStatusText = useCallback((status: string): string=>{
         // 'processing' / 'succeeded', nodatasource状态才可绑定数据源
         let str = '未索引';
         switch(status) {
@@ -145,7 +161,7 @@ const Config = (props: ComponentProps): JSX.Element=>{
             default:
         }
         return str;
-    }
+    }, []);
 
     // 更新表格数据
     const updateTable = (fieldList: any[] , fieldRelevancy?: IData[])=> {
@@ -161,26 +177,34 @@ const Config = (props: ComponentProps): JSX.Element=>{
                 relevancy: _relevancy
             }
         })
-        setDataSource(_dataSource)
-        if (fieldRelevancy) {
-            const _keys = fieldRelevancy.map(obj=>obj.field_name);
-            setSelectedRowKeys(_keys);
+        setDataSource(_dataSource);
+        let _keys : string [] = [];
+        if (fieldRelevancy && fieldRelevancy.length) {
+            _keys = fieldRelevancy.map(obj=>obj.field_name);
         } else {
             // 默认选中id
             const obj : IData | undefined = _dataSource.find(obj=>obj.field_name === '_id');
             if (obj) {
-                setSelectedRowKeys([obj.field_name]);
+                _keys = [obj.field_name];
+                // setSelectedRowKeys([obj.field_name]);
             }
         }
+        setSelectedRowKeys(_keys);
+
+
+        const _fieldRelevancy : IData[] = _dataSource.filter(obj=>_keys.includes(obj.field_name));
+        bindDataSource(modelInfo, _fieldRelevancy);
     }
 
     return(
-        <div className='project-config'>
+        <div className='search-engine-config'>
             {
                 isIndex ? (<>
                     <Row>
                         <Col span={4}><BarsOutlined style={{marginRight: '10px'}} /> 数据源</Col>
-                        <Col span={20}>{detail ? detail.collection_name : <Button type='link' onClick={handleClick} style={{textAlign: 'left', paddingLeft: 0}} >未选择</Button>}</Col>
+                        <Col span={20}>
+                            {detail && detail.status !== NO_DATA_SOURCE  ?  detail.collection_name : <Button type='link' onClick={handleClick} style={{textAlign: 'left', paddingLeft: 0}} >未选择</Button>}
+                        </Col>
                     </Row>
                     <Row>
                         <Col span={4}><BarsOutlined style={{marginRight: '10px'}} />配置字段</Col>
@@ -208,8 +232,25 @@ const Config = (props: ComponentProps): JSX.Element=>{
                         setModelInfo(info);
                         setShowModal(false);
 
-                        updateTable(info.field_list)
-                        // bindDataSource(info);
+                        // updateTable(info.field_list)
+                        const fieldList = info.field_list || [];
+                        const _dataSource : IData[] = fieldList.map(obj=>{
+                            const _relevancy = 50;
+                            return {
+                                field_name: obj.field_name,
+                                relevancy: _relevancy
+                            }
+                        })
+                        setDataSource(_dataSource)
+                        // 默认选中id
+                        const obj : IData | undefined = _dataSource.find(obj=>obj.field_name === '_id');
+                        if (obj) {
+                            setSelectedRowKeys([obj.field_name]);
+                        }
+
+                        bindDataSource(info, undefined, ()=>{
+                            fetchIndexDetail({index_id: props.selectedNode?.key as string, app_id: props.app_id });
+                        });
                     }}
                 />
             )}

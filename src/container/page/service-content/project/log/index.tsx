@@ -1,7 +1,8 @@
 import {useCallback, useEffect, useState} from 'react';
 import {Row, Col, Input, Table, message, Slider} from 'antd';
-import {BarsOutlined, SearchOutlined} from '@ant-design/icons';
-import {ComponentProps, IData, IDetail, NODE_TYPE} from '@src/container/page/service-content/project/interface';
+import {BarsOutlined, SearchOutlined } from '@ant-design/icons';
+import {ComponentProps, IResult, NODE_TYPE} from '@src/container/page/service-content/project/interface';
+import moment from 'moment';
 import './index.less';
 import request from '@src/container/page/api';
 
@@ -55,12 +56,15 @@ const Log = (props: ComponentProps): JSX.Element=>{
             title: '时间',
             dataIndex: 'create_time',
             key: 'create_time',
+            render: (text: string)=>{
+                return moment(text).format('YYYY-MM-DDTHH:mm:ss');
+            }
         },
         {
             title: '类型',
             dataIndex: 'task_type',
             key: 'task_type',
-            render: (text)=>{
+            render: (text: string)=>{
                 return LOG_TYPE[text];
             }
         },
@@ -68,13 +72,16 @@ const Log = (props: ComponentProps): JSX.Element=>{
             title: '内容',
             dataIndex: 'content',
             key: 'content',
+            render: (text:undefined , record: ILog)=>{
+                return `${LOG_TYPE[record.task_type]}${record.task_name}`;
+            }
         }
     ];
 
     useEffect(()=>{ // 初始化
         if (props.app_id && props.selectedNode && props.selectedNode.type === NODE_TYPE.ITEM) {
             setIsIndex(true);
-            fetchIndexLog({index_id: props.selectedNode.key as string, app_id: props.app_id, value: '' });
+            fetchIndexLog({index_id: props.selectedNode.key as string, app_id: props.app_id, keyword: '' });
         } else {
             setIsIndex(false);
             setValue('');
@@ -83,18 +90,18 @@ const Log = (props: ComponentProps): JSX.Element=>{
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         console.log(e.target.value);
-        const _value: string = e.target.value;
+        const _value: string = e.target.value.trim();
         setValue(_value);
-        fetchIndexLog({index_id: props.selectedNode?.key as string, app_id: props.app_id, value: _value});
+        fetchIndexLog({index_id: props.selectedNode?.key as string, app_id: props.app_id, keyword: _value});
     }
 
     // 获取项目下数据源详情
-    const fetchIndexLog = useCallback(async(params: {index_id: string, app_id: string, value: string})=>{
+    const fetchIndexLog = useCallback(async(params: {index_id: string, app_id: string, keyword: string})=>{
         try {
-            const res: ILog[] = await request.projectInfo.queryLog({page:1, page_size: 9999, ...params});
-            console.log('fetchIndexDetail res', res);
-            if (res) {
-                setDataSource(res);
+            const res: IResult = await request.projectInfo.queryLog({page:1, page_size: 9999, ...params});
+            console.log('fetchIndexLog res', res);
+            if (res.errcode === 0) {
+                setDataSource(res?.data?.list as ILog[] || []);
             } else {
                 setDataSource([]);
             }
@@ -104,16 +111,16 @@ const Log = (props: ComponentProps): JSX.Element=>{
     }, []);
 
     return(
-        <div className='project-log'>
+        <div className='search-engine-log'>
             {
                 isIndex ? (<>
-                    <Row className='project-log-title'>
+                    <Row className='search-engine-log-title'>
                         <Col span={2}><BarsOutlined style={{marginRight: '10px'}} />日志</Col>
                         <Col span={22} style={{textAlign: 'right'}}>
                             <Input value={value} prefix={<SearchOutlined />} placeholder='请输入' onChange={onChange} style={{ width: 200 }} allowClear />
                         </Col>
                     </Row>
-                    <Row className='project-log-content'>
+                    <Row className='search-engine-log-content'>
                         <Col span={24}>
                             <Table rowKey='create_time' pagination={false}  dataSource={dataSource} columns={columns} />
                         </Col>

@@ -28,7 +28,7 @@ export interface ComponentProps {
 export interface IResult{
     errcode: number;
     msg: string;
-    data: unknown
+    data: any
 }
 
 // 节点类型-分类|项目节点

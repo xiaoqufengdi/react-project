@@ -50,7 +50,7 @@ export interface INode extends DataNode {
 }
 // 传给各个子组件的属性
 
-const ProjectInfo: React.FC= ()=>{
+const SearchEngineProjectInfo: React.FC= ()=>{
     const [dataSource, setDataSource] = useState<INode[]>([]);
     // const treeRef = useRef<HTMLDivElement|null>(null);
     // const treeRef = useRef<typeof Tree>(null);
@@ -250,7 +250,7 @@ const ProjectInfo: React.FC= ()=>{
                     treeNode.data.type === NODE_TYPE.CLASS ? (<div>
                         <Dropdown
                             trigger={["hover"]}
-                            menu={menu}
+                            overlay={menu}
                             placement='bottomRight'
                         >
                             <span><MoreOutlined rotate={90} /></span>
@@ -280,22 +280,22 @@ const ProjectInfo: React.FC= ()=>{
     };
 
 
-    const onDragEnter = (info: any) => {
-        // console.log("onDragEnter", info.event);
-        // 调整滚动条的位置
-        const treeDOM: any = document.querySelector(".project-info-tree");
-        if (treeDOM.scrollHeight > treeDOM.clientHeight) {
-            // 高度有溢出的情况下
-            if (info.event.pageY < 220 && treeDOM.scrollTop > 0) {
-                // 靠近顶部
-                treeDOM.scrollTop = (treeDOM.scrollTop - 5 > 0) ? (treeDOM.scrollTop - 5) : 0;
-            }
-            if(info.event.pageY + 60 > treeDOM.clientHeight + 160){
-                // 靠近底部
-                treeDOM.scrollTop = (treeDOM.scrollTop + 5 < treeDOM.scrollHeight) ? (treeDOM.scrollTop + 5): treeDOM.scrollHeight;
-            }
-        }
-    };
+    // const onDragEnter = (info: any) => {
+    //     // console.log("onDragEnter", info.event);
+    //     // 调整滚动条的位置
+    //     const treeDOM: any = document.querySelector(".search-engine-project-tree");
+    //     if (treeDOM.scrollHeight > treeDOM.clientHeight) {
+    //         // 高度有溢出的情况下
+    //         if (info.event.pageY < 220 && treeDOM.scrollTop > 0) {
+    //             // 靠近顶部
+    //             treeDOM.scrollTop = (treeDOM.scrollTop - 5 > 0) ? (treeDOM.scrollTop - 5) : 0;
+    //         }
+    //         if(info.event.pageY + 60 > treeDOM.clientHeight + 160){
+    //             // 靠近底部
+    //             treeDOM.scrollTop = (treeDOM.scrollTop + 5 < treeDOM.scrollHeight) ? (treeDOM.scrollTop + 5): treeDOM.scrollHeight;
+    //         }
+    //     }
+    // };
 
     // const onDragLeave = (info: any)=>{
     //     console.log("onDragLeave");
@@ -492,21 +492,19 @@ const ProjectInfo: React.FC= ()=>{
     };
 
     return (
-       <Layout className='project-info'>
-           <Sider className='project-info-left'
-                  trigger={null} collapsible
-                  collapsed={collapsed} width={260}
-                  collapsedWidth={20}
+       <Layout className='search-engine-project'>
+           <Sider className='search-engine-project-left'
+                  width={280}
            >
-               <div className='project-info-title'><span>全部项目</span></div>
+               <div className='search-engine-project-title'><span>全部项目</span></div>
                <Tree
                    ref={treeRef }
                    // // checkable
-                   className='project-info-tree'
+                   className='search-engine-project-tree'
                    // // defaultExpandedKeys={expandedKeys}
                    draggable
                    blockNode
-                   onDragEnter={onDragEnter}
+                   // onDragEnter={onDragEnter}
                    onDrop={onDrop}
                    titleRender={renderTreeNode}
                    autoExpandParent={true}
@@ -518,17 +516,13 @@ const ProjectInfo: React.FC= ()=>{
                        renderTreeNodes(dataSource)
                    }
                </Tree>
-               <Button type='link' size='large' onClick={ handleOnAdd } >创建分类</Button>
+               <Button type='link' size='large' onClick={ handleOnAdd } style={{color: '#1B9AEE'}} >创建分类</Button>
            </Sider>
            <Layout>
-               <Content className='project-info-right'>
-                   <Row className='project-info-right-title'><Col span={1}>
-                       {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                           className: 'trigger',
-                           onClick: () => setCollapsed(!collapsed),
-                       })}
-                   </Col><Col span={23} className='project-info-right-name' >{ selectedNode ? selectedNode.title : '未选中项目' } </Col> </Row>
-                   <Row className='project-info-right-content'>
+               <Content className='search-engine-project-right'>
+                   <Row className='search-engine-project-right-title'>
+                   <Col span={24} className='search-engine-project-right-name' >{ selectedNode ? selectedNode.title : '未选中项目' } </Col> </Row>
+                   <Row className='search-engine-project-right-content'>
                        <Col span={24}>
                            <Tabs  defaultActiveKey='config' tabBarGutter={50}   >
                                <Tabs.TabPane tab='配置' key='config' >
@@ -565,4 +559,4 @@ const ProjectInfo: React.FC= ()=>{
     )
 }
 
-export default ProjectInfo;
+export default SearchEngineProjectInfo;
