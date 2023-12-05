@@ -9,9 +9,15 @@
     height: 100%;
     overflow: hidden;
     .search-engine-project-title{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       height: 40px;
-      line-height: 40px;
       padding: 0 20px;
+
+      img:hover {
+        background-color: rgba(229, 229, 229, 1);
+      }
 
     }
     .search-engine-project-tree{
@@ -37,6 +43,13 @@
           font-weight: 500;
           font-style: normal;
           color: #262626;
+        }
+
+        .ant-dropdown-trigger{
+          margin-right: 10px;
+          .anticon:hover {
+            background-color: rgba(229, 229, 229, 1);
+          }
         }
       }
     }

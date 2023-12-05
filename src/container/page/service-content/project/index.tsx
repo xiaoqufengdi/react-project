@@ -3,6 +3,7 @@ import {Button, Row, Col, Form, Input, Layout, message, Modal,  Space, Table, Tr
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    PlusOutlined,
     MoreOutlined,
     CloseOutlined
 } from '@ant-design/icons';
@@ -14,6 +15,8 @@ import { IResult, NODE_TYPE } from './interface';
 import Dictionary from './dictionary';
 import Log from './log';
 import SearchInfo from './search';
+import expandIcon from '@src/assert/expand.svg';
+
 import './index.less';
 
 const { TreeNode } = Tree;
@@ -23,6 +26,8 @@ const { Header, Sider, Content } = Layout;
 enum OPERATOR_TYPE {
     ADD_TYPE = 'ADD_TYPE',  // 添加分类
     ADD_PROJECT = 'ADD_PROJECT', // 添加项目
+
+    RENAME_TYPE = 'RENAME_NAME',
     DELETE_TYPE = 'DELETE_TYPE' // 删除分类
 }
 interface Action {
@@ -32,6 +37,9 @@ interface Action {
 const ACTION_DROP_LIST: Action[] = [
     {id: OPERATOR_TYPE.ADD_TYPE, name: '创建分类' },
     { id: OPERATOR_TYPE.ADD_PROJECT, name: '创建项目' },
+];
+const ACTION_DROP_LIST2: Action[] = [
+    {id: OPERATOR_TYPE.RENAME_TYPE, name: '重命名' },
     { id: OPERATOR_TYPE.DELETE_TYPE, name: '删除分类' }
 ];
 
@@ -55,7 +63,7 @@ const SearchEngineProjectInfo: React.FC= ()=>{
     // const treeRef = useRef<HTMLDivElement|null>(null);
     // const treeRef = useRef<typeof Tree>(null);
     const treeRef = useRef<any>(null);
-    const [collapsed, setCollapsed] = useState(false);
+    // const [collapsed, setCollapsed] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);  // 创建分类|项目
     const [modalType, setModalType] = useState<OPERATOR_TYPE>(OPERATOR_TYPE.ADD_TYPE); // 分类的下拉菜单
     const [operatorNode , setOperatorNode] = useState<INode|null>(null);  // 在哪个分类节点上-下拉菜单
@@ -71,7 +79,8 @@ const SearchEngineProjectInfo: React.FC= ()=>{
     const [editingKey, setEditingKey] = useState<string | null>(null); // 编辑节点
     const [selectedNode, setSelectedNode] = useState< INode|null>(null); // 记录选中的节点数据
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]); // 记录选中的节点key
-
+    const [expandedKeys, setExpandedKeys] = useState<string[]>([]); // 树节点key
+    const [isExpand, setIsExpand] = useState<boolean>(false);
 
     // 初始化取左侧树的数据
     useEffect(()=>{
@@ -83,6 +92,7 @@ const SearchEngineProjectInfo: React.FC= ()=>{
         try{
             const result = await request.projectInfo.queryTypeAll({app_id, type: 'index'});
             console.log('result', result);
+            const keys: string[] = [];
             // 给节点数据加上key属性
             const fun = function (arr: Array<INode>){
                 return arr.map((obj: INode)=>{
@@ -93,20 +103,30 @@ const SearchEngineProjectInfo: React.FC= ()=>{
                     if (obj.children?.length) {
                        _obj.children = fun(obj.children);
                     }
+                    keys.push(_obj.key as string);
                     return _obj
                 })
             }
             const _data: Array<INode> = fun(result as INode[]);
             console.log('_data', _data);
             setDataSource(_data);
+            const _expandedKeys = expandedKeys.filter(key=>keys.includes(key));
+            console.log('_expandedKeys', _expandedKeys);
+            setExpandedKeys(_expandedKeys);
+            if (selectedKeys.length) {
+                if (!keys.includes(selectedKeys[0])) {
+                    setSelectedKeys([]);
+                    setSelectedNode(null);
+                }
+            }
         } catch(e) {
             console.log(e);
         }
-    }, [app_id]);
+    }, [app_id, expandedKeys, selectedKeys]);
 
     // 自定义树title
     const renderTreeNodes = (treeData: INode[]) => {
-        console.log('renderTreeNodes', treeData);
+        // console.log('renderTreeNodes', treeData);
         return treeData.map((node: INode)=>{
             const isEditing = editingKey === node.key;
             if (node.children) {
@@ -223,15 +243,21 @@ const SearchEngineProjectInfo: React.FC= ()=>{
             <Menu>
                 {
                     ACTION_DROP_LIST.map((obj: Action)=>{
-                        if(obj.id === OPERATOR_TYPE.DELETE_TYPE) { // 删除前面加分隔线
-                            return(<>
-                                <Menu.Divider />
-                                <Menu.Item
-                                    key={obj.id}
-                                    onClick={() => dropMenuClick(obj, treeNode.data)}
-                                >{obj.name}</Menu.Item>
-                            </>)
-                        }
+                        return (
+                            <Menu.Item
+                                key={obj.id}
+                                onClick={() => dropMenuClick(obj, treeNode.data)}
+                            >{obj.name}</Menu.Item>
+                        )
+                    })
+                }
+            </Menu>
+        );
+
+        const menu2: any = (
+            <Menu>
+                {
+                    ACTION_DROP_LIST2.map((obj: Action)=>{
                         return (
                             <Menu.Item
                                 key={obj.id}
@@ -253,8 +279,14 @@ const SearchEngineProjectInfo: React.FC= ()=>{
                             overlay={menu}
                             placement='bottomRight'
                         >
-                            <span><MoreOutlined rotate={90} /></span>
-
+                            <span><PlusOutlined style={{fontSize: '18px', padding: '1px'}}/></span>
+                        </Dropdown>
+                        <Dropdown
+                            trigger={["hover"]}
+                            overlay={menu2}
+                            placement='bottomRight'
+                        >
+                            <span><MoreOutlined rotate={90} style={{fontSize: '18px', padding: '1px'}} /></span>
                         </Dropdown>
                     </div> ) : <CloseOutlined onClick={()=>handleDeleteIndex(treeNode.data)} />
                 }
@@ -270,6 +302,9 @@ const SearchEngineProjectInfo: React.FC= ()=>{
         setModalType(obj.id);
         setVisible(true);
         setOperatorNode(node);
+        if (obj.id === OPERATOR_TYPE.RENAME_TYPE) {
+            form.setFieldsValue({title: node.title });
+        }
 
     };
     // 创建分类
@@ -374,6 +409,7 @@ const SearchEngineProjectInfo: React.FC= ()=>{
     const getModalContent = (modalType: OPERATOR_TYPE):JSX.Element|null=>{
         switch(modalType){
             case OPERATOR_TYPE.ADD_TYPE:  // 添加分类
+            case OPERATOR_TYPE.RENAME_TYPE: // 分类重命名
                 return (
                     <Form form={form} name='project-form'
                           layout='vertical'
@@ -483,6 +519,16 @@ const SearchEngineProjectInfo: React.FC= ()=>{
                     message.error('删除分类失败')
                 }
                 break;
+            case OPERATOR_TYPE.RENAME_TYPE: // 重命名
+                try{
+                    const res: {title: string} = await form.validateFields();
+                    form.resetFields();
+                    setVisible(false);
+                    handleSave(operatorNode as INode, res.title);
+                } catch (e) {
+                    console.log(e);
+                }
+               break;
             default:
         }
     };
@@ -491,12 +537,43 @@ const SearchEngineProjectInfo: React.FC= ()=>{
         setVisible(false);
     };
 
+    // 展开收起树节点
+    const handleExpand = ()=>{
+        setIsExpand(val=>!val);
+    }
+
+    useEffect(()=>{
+        if (!isExpand) {
+            setExpandedKeys([]);
+        } else if(dataSource.length){
+            const keys = []
+            const fun = (arr: INode[], keys: string[])=>{
+                return arr.forEach(obj=>{
+                    keys.push(obj.key as string);
+                    if(obj.children && obj.children.length) {
+                        return fun(obj.children, keys);
+                    }
+                })
+            }
+            fun(dataSource, keys);
+            console.log('keys', keys);
+            setExpandedKeys(keys);
+        }
+    }, [isExpand])
+
+    const onExpand = (expandedKeysValue: React.Key[]) => {
+        console.log('onExpand', expandedKeysValue);
+        setExpandedKeys(expandedKeysValue as string[]);
+    };
+
     return (
        <Layout className='search-engine-project'>
            <Sider className='search-engine-project-left'
                   width={280}
            >
-               <div className='search-engine-project-title'><span>全部项目</span></div>
+               <div className='search-engine-project-title'>
+                   <span>全部项目</span> <img onClick={handleExpand} src={expandIcon} alt='pic' width={16} height={16} />
+               </div>
                <Tree
                    ref={treeRef }
                    // // checkable
@@ -504,13 +581,14 @@ const SearchEngineProjectInfo: React.FC= ()=>{
                    // // defaultExpandedKeys={expandedKeys}
                    draggable
                    blockNode
+                   expandedKeys={expandedKeys}
                    // onDragEnter={onDragEnter}
                    onDrop={onDrop}
                    titleRender={renderTreeNode}
                    autoExpandParent={true}
                    onSelect={(selectedKeys: any[], event: any)=>{ handleOnSelect(selectedKeys, event) }}
                    selectedKeys={ selectedKeys }
-                   defaultExpandAll={true}
+                   onExpand={onExpand}
                >
                    {
                        renderTreeNodes(dataSource)
@@ -521,7 +599,7 @@ const SearchEngineProjectInfo: React.FC= ()=>{
            <Layout>
                <Content className='search-engine-project-right'>
                    <Row className='search-engine-project-right-title'>
-                   <Col span={24} className='search-engine-project-right-name' >{ selectedNode ? selectedNode.title : '未选中项目' } </Col> </Row>
+                   <Col span={24} className='search-engine-project-right-name' >{ selectedNode ? selectedNode.title : '' } </Col> </Row>
                    <Row className='search-engine-project-right-content'>
                        <Col span={24}>
                            <Tabs  defaultActiveKey='config' tabBarGutter={50}   >
@@ -543,7 +621,7 @@ const SearchEngineProjectInfo: React.FC= ()=>{
                    {
                        visible ? <Modal
                            open={visible}
-                           title={ ACTION_DROP_LIST.find((obj:Action)=>obj.id===modalType)?.name || '' }
+                           title={ ACTION_DROP_LIST.concat(ACTION_DROP_LIST2).find((obj:Action)=>obj.id===modalType)?.name || '' }
                            okText='确定'
                            onOk={() => handleOk()}
                            onCancel={() => handleCancel()}
