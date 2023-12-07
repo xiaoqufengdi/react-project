@@ -57,8 +57,9 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
     // 查询
     const query = useCallback(async(params)=>{
         try {
-           // const res : IResult = await request.projectInfo.search(params);
+           const res : any = await request.projectInfo.search(params);
            // test code
+/*
            const res: any = {
                "list": [
                    {
@@ -96,7 +97,7 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
                "highlight_pre_tag": "`",
                "highlight_post_tag": "`"
            }
-
+*/
 
             console.log('search, res', res);
             setHighlightField(res.highlight_field as string[]);

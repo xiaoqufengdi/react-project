@@ -467,7 +467,7 @@ const SearchEngineProjectInfo: React.FC= ()=>{
                     try{
                         const params: { app_id: string, pid: string, class_name: string, type: string } = {
                             app_id,
-                            pid: operatorNode ? operatorNode.pid : '0',
+                            pid: operatorNode ? operatorNode.class_id : '0',
                             class_name: res.title,
                             type: 'index'
                         }
