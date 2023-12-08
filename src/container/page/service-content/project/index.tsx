@@ -1,8 +1,6 @@
 import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react';
-import {Button, Row, Col, Form, Input, Layout, message, Modal,  Space, Table, Tree, Select, Tabs, Dropdown, Menu} from 'antd';
+import {Button, Row, Col, Form, Input, Layout, message, Modal, Tree, Tabs, Dropdown, Menu} from 'antd';
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     PlusOutlined,
     MoreOutlined,
     CloseOutlined
@@ -20,7 +18,7 @@ import expandIcon from '@src/assert/expand.svg';
 import './index.less';
 
 const { TreeNode } = Tree;
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 // 分类下拉菜单
 enum OPERATOR_TYPE {
@@ -313,29 +311,6 @@ const SearchEngineProjectInfo: React.FC= ()=>{
         setModalType(OPERATOR_TYPE.ADD_TYPE);
         setOperatorNode(null);
     };
-
-
-    // const onDragEnter = (info: any) => {
-    //     // console.log("onDragEnter", info.event);
-    //     // 调整滚动条的位置
-    //     const treeDOM: any = document.querySelector(".search-engine-project-tree");
-    //     if (treeDOM.scrollHeight > treeDOM.clientHeight) {
-    //         // 高度有溢出的情况下
-    //         if (info.event.pageY < 220 && treeDOM.scrollTop > 0) {
-    //             // 靠近顶部
-    //             treeDOM.scrollTop = (treeDOM.scrollTop - 5 > 0) ? (treeDOM.scrollTop - 5) : 0;
-    //         }
-    //         if(info.event.pageY + 60 > treeDOM.clientHeight + 160){
-    //             // 靠近底部
-    //             treeDOM.scrollTop = (treeDOM.scrollTop + 5 < treeDOM.scrollHeight) ? (treeDOM.scrollTop + 5): treeDOM.scrollHeight;
-    //         }
-    //     }
-    // };
-
-    // const onDragLeave = (info: any)=>{
-    //     console.log("onDragLeave");
-    //     console.log(info);
-    // };
 
     const onDrop = async (info: any) => {
         console.log("onDrop info", info);

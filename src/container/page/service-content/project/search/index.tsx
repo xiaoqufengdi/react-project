@@ -1,7 +1,7 @@
-import {useState, useCallback, useEffect, ReactNode, memo} from 'react';
+import {useState, useCallback, useEffect, memo} from 'react';
 import { Row, Col, Input} from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import { NODE_TYPE, ComponentProps, IResult, IDetail } from '../interface';
+import { NODE_TYPE, ComponentProps, IDetail } from '../interface';
 import request from '@src/container/page/api';
 import searchNoDataIcon from '@src/assert/searchNoData.svg';
 import './index.less';
@@ -37,7 +37,7 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
             }
             query(params);
         }
-    }, [detail, value]);
+    }, [detail]);
 
     // 获取项目下数据源详情
     const fetchIndexDetail = useCallback(async(params: {index_id: string, app_id: string})=>{
@@ -100,10 +100,9 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
 */
 
             console.log('search, res', res);
-            setHighlightField(res.highlight_field as string[]);
-            setTotal(res.total);
-            setList(res.list || []);
-
+            setHighlightField(res.data.highlight_field as string[]);
+            setTotal(res.data.total);
+            setList(res.data.list || []);
         } catch (e) {
             console.log(e);
         }
@@ -132,8 +131,8 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
             list.map((obj: Record<string, unknown>, index: number)=>{
                 return (<div key={index} className='search-engine-search-content-list'>
                     {
-                        highlightField.map(field=>{
-
+                        // eslint-disable-next-line no-prototype-builtins
+                        highlightField.filter(key=>obj.hasOwnProperty(key)).map(field=>{
                             const fieldInfo: Record<string, any>|undefined = (detail?.field_list as Record<string, unknown>[]) .find(fieldInfo=>fieldInfo.field_name === field);
                             if (fieldInfo) {
                                 const title: string = fieldInfo?.widget_info?.name || '';

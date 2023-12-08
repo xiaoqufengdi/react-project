@@ -1,8 +1,8 @@
 import {useState, useCallback, useEffect, memo} from 'react';
-import {Row, Col, Input, Button, Table, Modal, Checkbox, message} from 'antd';
+import {Row, Col, Button, Table, Modal, Checkbox, message} from 'antd';
 import moment from 'moment';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import {BarsOutlined, SearchOutlined, DatabaseOutlined } from '@ant-design/icons';
+import {BarsOutlined } from '@ant-design/icons';
 import {NODE_TYPE, ComponentProps, IResult} from '../interface';
 import request from '@src/container/page/api';
 import dictionaryIcon from '@src/assert/dictionary.svg';
@@ -145,6 +145,10 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
 
     // 添加关联字典响应函数
     const handleOk = async()=>{
+        if (checkedList.length === 0) {
+            message.info('请至少选择一条字典数据关联');
+            return;
+        }
         setVisible(false);
         try {
             const params = {

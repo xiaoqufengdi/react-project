@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState, memo} from 'react';
-import {Row, Col, Input, Table, message, Slider} from 'antd';
+import {Row, Col, Input, Table} from 'antd';
 import {BarsOutlined, SearchOutlined } from '@ant-design/icons';
 import {ComponentProps, IResult, NODE_TYPE} from '@src/container/page/service-content/project/interface';
 import moment from 'moment';
