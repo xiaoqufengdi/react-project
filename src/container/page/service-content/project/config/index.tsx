@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, memo } from 'react';
 import { Row, Col, Button, Table, Slider, message } from 'antd';
 import {BarsOutlined, ConsoleSqlOutlined } from '@ant-design/icons';
 import { NODE_TYPE, ComponentProps, IDetail, IData, IResult } from '../interface';
@@ -65,12 +65,13 @@ const Config = (props: ComponentProps): JSX.Element=>{
 
     useEffect(()=>{ // 初始化
         if (props.app_id && props.selectedNode && props.selectedNode.type === NODE_TYPE.ITEM) {
+            console.log('Config props 初始化', props);
             setIsIndex(true);
             fetchIndexDetail({index_id: props.selectedNode.key as string, app_id: props.app_id });
         } else {
             setIsIndex(false);
         }
-    }, [props]);
+    }, [props.app_id, props.selectedNode]);
 
     // 获取项目下数据源详情
     const fetchIndexDetail = useCallback(async(params: {index_id: string, app_id: string})=>{
@@ -258,4 +259,4 @@ const Config = (props: ComponentProps): JSX.Element=>{
     )
 }
 
-export default Config;
+export default memo(Config);

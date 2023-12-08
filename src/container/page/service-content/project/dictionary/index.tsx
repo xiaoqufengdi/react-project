@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect} from 'react';
+import {useState, useCallback, useEffect, memo} from 'react';
 import {Row, Col, Input, Button, Table, Modal, Checkbox, message} from 'antd';
 import moment from 'moment';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
@@ -79,7 +79,7 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
             setCheckedList([]);
             setIsIndex(false);
         }
-    }, [props]);
+    }, [props.app_id, props.selectedNode]);
 
     // 获取项目下关联的字典
     const fetchIndexDictionary = useCallback(async(params: {index_id: string})=>{
@@ -224,4 +224,4 @@ const Dictionary = (props: ComponentProps): JSX.Element=>{
     )
 }
 
-export default Dictionary;
+export default memo(Dictionary);

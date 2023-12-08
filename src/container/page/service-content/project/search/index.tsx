@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect, ReactNode} from 'react';
+import {useState, useCallback, useEffect, ReactNode, memo} from 'react';
 import { Row, Col, Input} from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import { NODE_TYPE, ComponentProps, IResult, IDetail } from '../interface';
@@ -180,4 +180,4 @@ const SearchInfo = (props: ComponentProps): JSX.Element=>{
     )
 }
 
-export default SearchInfo;
+export default memo(SearchInfo);

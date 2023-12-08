@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState, memo} from 'react';
 import {Row, Col, Input, Table, message, Slider} from 'antd';
 import {BarsOutlined, SearchOutlined } from '@ant-design/icons';
 import {ComponentProps, IResult, NODE_TYPE} from '@src/container/page/service-content/project/interface';
@@ -86,7 +86,7 @@ const Log = (props: ComponentProps): JSX.Element=>{
             setIsIndex(false);
             setValue('');
         }
-    }, [props]);
+    }, [props.app_id, props.selectedNode]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         console.log(e.target.value);
@@ -131,4 +131,4 @@ const Log = (props: ComponentProps): JSX.Element=>{
     )
 }
 
-export default Log;
+export default memo(Log);

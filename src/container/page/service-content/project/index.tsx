@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react';
 import {Button, Row, Col, Form, Input, Layout, message, Modal,  Space, Table, Tree, Select, Tabs, Dropdown, Menu} from 'antd';
 import {
     MenuFoldOutlined,
@@ -352,7 +352,8 @@ const SearchEngineProjectInfo: React.FC= ()=>{
             if (dragNode.data.type === NODE_TYPE.CLASS) {
                 parentKey = node.props.data.data.pid;
             } else {
-                parentKey = node.props.data.key;
+                // parentKey = node.props.data.key;
+                parentKey = node.props.data.data.pid;
             }
         } else {
             parentKey = node.props.data?.key || ''
@@ -637,4 +638,4 @@ const SearchEngineProjectInfo: React.FC= ()=>{
     )
 }
 
-export default SearchEngineProjectInfo;
+export default memo(SearchEngineProjectInfo);
